@@ -1,6 +1,8 @@
 package com.silvaronaldo.workshopmongo.resource;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.silvaronaldo.workshopmongo.domain.User;
+import com.silvaronaldo.workshopmongo.dto.UserDTO;
 import com.silvaronaldo.workshopmongo.services.UserService;
 
 @RestController
@@ -28,8 +31,14 @@ public class UserResource {
 	 */
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<User>> findAll() {
+	public ResponseEntity<List<UserDTO>> findAll() {
 		List<User> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+		//agora precisa converter a lista original List<User> em uma lista List<UserDTO
+		//list.stream() ==> expressão lambda java 8
+		// map( x -> new UserDTO(x)) ===> para cada objeto x (usuário) retorna um UserDTO passando x como argumento
+		// collect(Collectors.toList()) ==> voltar para uma lista
+		List<UserDTO> listDto = list.stream().map( x -> new UserDTO(x)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok().body(listDto);
 	}
 }
