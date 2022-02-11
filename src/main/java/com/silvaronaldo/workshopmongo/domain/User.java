@@ -20,7 +20,7 @@ public class User implements Serializable {
 	private String name;
 	private String email;
 	
-	@DBRef
+	@DBRef(lazy = true) //carregamento tardio lazy
 	private List<Post> posts = new ArrayList<>();
 	
 	public User() {
